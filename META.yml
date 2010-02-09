@@ -1,0 +1,31 @@
+---
+abstract: "include the 'next' template file with identical relative path"
+author:
+  - 'Alexander Kühne <alexk@cpan.org>'
+build_requires:
+  ExtUtils::MakeMaker: 6.42
+  Test::More: 0
+configure_requires:
+  ExtUtils::MakeMaker: 6.42
+distribution_type: module
+generated_by: 'Module::Install version 0.91'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Template-Plugin-Next
+no_index:
+  directory:
+    - inc
+    - t
+requires:
+  Cwd: 0
+  File::Spec: 0
+  Template: 2.01
+  Template::Exception: 0
+  Template::Plugin: 0
+  Template::Test: 0
+  perl: 5.6.0
+resources:
+  license: http://dev.perl.org/licenses/
+version: 0.02
