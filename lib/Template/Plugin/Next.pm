@@ -17,11 +17,11 @@ Template::Plugin::Next - include the 'next' template file with identical relativ
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =cut
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 
 =head1 SYNOPSIS
@@ -41,16 +41,12 @@ Example:
   
   # template b/test.tt:
   b
-  [% USE Next;
-     Next.include( repeat => 3 );
-  %]
+  [% USE Next; Next.include( repeat => 3 ); %]
   b
   
   # template c/test.tt:
   c
-  [% USE Next;
-     Next.include();
-  %]
+  [% USE Next; Next.include(); %]
   c
 
   # a call to template test.tt
@@ -110,8 +106,6 @@ sub process {
     foreach my $provider ( grep { ref( $_ ) eq 'Template::Provider' } @$providers ) { 
     	# we know only how to handle the standard behaviour of providers
 
-	local $provider->{ABSOLUTE} = 1;
-
 	my $rel_path = $name;
 	my @include_paths = @{$provider->paths}; 
 		# include paths are returned in a list even if 
@@ -145,13 +139,17 @@ sub process {
 		my $path = _concat_path( $include_path, $rel_path );
 
 		if( scalar stat( $path ) ) {
-			my $template = $context->template($path);
+			my $template;
+			{
+				# make abs. template paths local to this template retrieval
+				local $provider->{ABSOLUTE} = 1;
+				$template = $context->template($path);
+			}
 			defined $template || $self->error( $context->error );
 			my $map = $stash->get( 'Next_' ) || {};
 			$map->{$path} = [ $include_path, $rel_path ];
 			$stash->set( 'Next_' => $map );
-			my $rv = $context->process( $template, $params, $localise );
-			return $rv;
+			return $context->process( $template, $params, $localise );
 		}
 	}
     }
